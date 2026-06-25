@@ -126,7 +126,17 @@ def remove_vehicle(request):
                 if next_wait and slot:
                     slot.occupied = True
                     slot.save()
-                    Vehicle.objects.create(vehicle_no=next_wait.vehicle_no, owner_name=next_wait.owner_name, vehicle_type=next_wait.vehicle_type, slot=slot)
+                    # reuse a previous exited Vehicle record if it exists to honor the unique constraint
+                    prev = Vehicle.objects.filter(vehicle_no=next_wait.vehicle_no, exit_time__isnull=False).order_by('-exit_time').first()
+                    if prev:
+                        prev.owner_name = next_wait.owner_name
+                        prev.vehicle_type = next_wait.vehicle_type
+                        prev.entry_time = timezone.now()
+                        prev.exit_time = None
+                        prev.slot = slot
+                        prev.save()
+                    else:
+                        Vehicle.objects.create(vehicle_no=next_wait.vehicle_no, owner_name=next_wait.owner_name, vehicle_type=next_wait.vehicle_type, slot=slot)
                     next_wait.delete()
 
                 receipt = {
