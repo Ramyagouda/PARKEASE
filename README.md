@@ -1,5 +1,7 @@
 🚗 **PARKEASE:Smart Parking Management System**
-🎯 Problem Statement
+
+
+**🎯Problem Statement**
 
 Finding a parking space in crowded areas is time-consuming and inefficient. Traditional parking systems often rely on manual slot management, leading to poor space utilization, long waiting times, and difficulty in tracking parked vehicles.
 
@@ -140,6 +142,10 @@ fig.waiting queue
 
 <img width="1666" height="662" alt="image" src="https://github.com/user-attachments/assets/2549b702-257e-4312-a394-d2822e4b0716" />
 fig.remove the vehicle
+
+<img width="1666" height="342" alt="image" src="https://github.com/user-attachments/assets/05eee8b5-d774-4f18-83c5-34137d19627e" />
+fig.search results
+
 
 
 <img width="1677" height="857" alt="image" src="https://github.com/user-attachments/assets/757ecf5b-76da-4083-a963-c1ee6c639ce2" />
