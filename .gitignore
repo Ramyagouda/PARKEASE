@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# SQLite database
+*.sqlite3
+db.sqlite3
+
+# Django stuff
+*.log
+*.pot
+*.pyc
+.DS_Store
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Distribution
+build/
+dist/
+*.egg-info/
+
+# OS files
+Thumbs.db
+Desktop.ini
