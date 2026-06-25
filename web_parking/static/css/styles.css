@@ -1,0 +1,787 @@
+:root {
+    --accent: #d81b60; /* primary pink */
+    --muted: #b388b0;
+    /* Pink-tinted cards for contrast */
+    --card: rgba(216,27,96,0.14);
+    /* Page light pink glass tint */
+    --page-bg-light: rgba(247,192,220,0.18);
+    --page-bg-light-2: rgba(255,241,245,0.14);
+    --bg-dark: #6b0f9c;
+    --bg-mid: #a31578;
+    --bg-light: #f7c0dc;
+    --text: #ffffff;      /* white text for contrast */
+    --glass: rgba(255, 255, 255, 0.06);
+
+    /* animation and glow tuning (unused for solid tint) */
+    --bg-duration: 24s;
+    --glow-opacity: 0.12;
+    --glow-blur: 60px;
+}
+
+/* Dark mode variables */
+.dark-mode :root,
+.dark-mode {
+    --accent: #8B5CF6;
+    --muted: #9CA3AF;
+    --card: rgba(18, 24, 37, 0.6);
+    --bg: linear-gradient(135deg, #60A5FA 0%, #8B5CF6 35%, #EC4899 70%, #4F46E5 100%);
+    --text: #E6EEF9;
+    --glass: rgba(255, 255, 255, 0.04);
+    --card-border: rgba(255, 255, 255, 0.06);
+    --chart-grid: rgba(255, 255, 255, 0.04);
+    --chart-text: #E6EEF9;
+}
+
+* {
+    box-sizing: border-box
+}
+
+/* Car-parking themed background (CSS-only). No external image dependencies. */
+.light-ui,
+body {
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #070b18;
+    background-image: none !important;
+    color: var(--text);
+    margin: 0;
+    padding: 0
+}
+
+
+/* Premium full-page animated gradient background + parking ambience (CSS only) */
+.light-ui {
+    /* Light pink glass-like page tint */
+    background: linear-gradient(180deg, var(--page-bg-light), var(--page-bg-light-2)) !important;
+    position: relative;
+    overflow-x: hidden;
+    color: var(--text);
+}
+
+/* Parking lot grid + lane stripes + slot pattern */
+.light-ui::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background:
+        /* slot dots */
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 1px, transparent 1px 26px),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 26px),
+        /* lane stripes */
+        repeating-linear-gradient(135deg, rgba(96, 165, 250, 0.16) 0 12px, rgba(139, 92, 246, 0.00) 12px 36px);
+    opacity: 0.55;
+    mix-blend-mode: screen;
+    transform: perspective(900px) rotateX(58deg) translateY(120px);
+    transform-origin: 50% 100%;
+    filter: blur(0.2px);
+}
+
+/* Stop the corner glows pseudo-elements from being overridden */
+.light-ui::before {
+    z-index: 0;
+}
+
+
+
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%
+    }
+
+    50% {
+        background-position: 100% 50%
+    }
+
+    100% {
+        background-position: 0% 50%
+    }
+}
+
+/* corner glows */
+.light-ui::before,
+.light-ui::after {
+    content: '';
+    position: fixed;
+    width: 40vw;
+    height: 40vw;
+    max-width: 900px;
+    max-height: 900px;
+    filter: blur(var(--glow-blur));
+    opacity: var(--glow-opacity);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.light-ui::before {
+    left: -10vw;
+    top: -10vw;
+    background: radial-gradient(circle at 20% 20%, rgba(216,27,96,0.92), transparent 30%);
+}
+
+/* deep magenta/purple */
+.light-ui::after {
+    right: -10vw;
+    bottom: -10vw;
+    background: radial-gradient(circle at 80% 80%, rgba(107,15,156,0.92), transparent 30%);
+}
+
+/* light blue */
+
+/* abstract curved accents bottom-left / bottom-right */
+.bg-network::before {
+    content: '';
+    position: absolute;
+    left: -8%;
+    bottom: -6%;
+    width: 55%;
+    height: 40%;
+    background: radial-gradient(60% 40% at 10% 90%, rgba(255, 255, 255, 0.04), transparent 40%);
+    transform: rotate(-12deg);
+    border-radius: 50% 40% 30% 60%/60% 30% 40% 50%;
+    opacity: 0.7;
+    pointer-events: none
+}
+
+.bg-network::after {
+    content: '';
+    position: absolute;
+    right: -8%;
+    bottom: -8%;
+    width: 45%;
+    height: 36%;
+    background: radial-gradient(60% 40% at 90% 90%, rgba(255, 255, 255, 0.03), transparent 40%);
+    transform: rotate(8deg);
+    border-radius: 40% 50% 30% 60%/50% 60% 30% 40%;
+    opacity: 0.6;
+    pointer-events: none
+}
+
+/* central glass overlay to improve readability */
+.light-ui .bg-network::before,
+.light-ui .bg-network::after {
+    mix-blend-mode: screen
+}
+
+.bg-network .glass-center {
+    position: absolute;
+    inset: 10% 8%;
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+    box-shadow: 0 8px 40px rgba(6, 14, 44, 0.12);
+    pointer-events: none;
+    z-index: 1
+}
+
+/* slight blur behind content sections */
+.container,
+.card,
+.hero,
+footer {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px)
+}
+
+/* parking banner placeholder */
+/* Parking banner: more visible animated accent */
+.parking-banner {
+    width: 340px;
+    height: 150px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 18px 50px rgba(6, 14, 44, 0.14);
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    z-index: 3
+}
+
+.parking-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 10% 20%, rgba(255, 255, 255, 0.06), transparent 20%), linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.00));
+    mix-blend-mode: overlay;
+    pointer-events: none
+}
+
+.parking-banner::after {
+    content: 'PARKING';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 1px;
+    opacity: 0.98;
+    font-size: 15px
+}
+
+.parking-banner .moving-accent {
+    position: absolute;
+    left: -30%;
+    top: -20%;
+    width: 160%;
+    height: 140%;
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.16), rgba(96, 165, 250, 0.08), rgba(236, 72, 153, 0.12));
+    transform: rotate(18deg);
+    filter: blur(24px);
+    animation: accentSlide 8s linear infinite;
+    opacity: 0.95;
+    pointer-events: none
+}
+
+@keyframes accentSlide {
+    0% {
+        transform: translateX(-40%) rotate(18deg)
+    }
+
+    50% {
+        transform: translateX(10%) rotate(18deg)
+    }
+
+    100% {
+        transform: translateX(-40%) rotate(18deg)
+    }
+}
+
+
+
+/* Overlay element to keep content readable over animated background. Use a
+	real DOM element (`.page-overlay`) so pseudo-elements used for corner
+	glows are not overwritten by later rules. */
+.page-overlay {
+    position: fixed;
+    inset: 0;
+    /* transparent overlay — page tint is solid purple so no photo tint needed */
+    background: transparent;
+    pointer-events: none;
+    z-index: 0
+}
+
+/* Stronger glass styling for content cards */
+.card, .form-card, .slot-card, .parking-card {
+    /* Pink-tinted cards site-wide (subtle) */
+    background: var(--card) !important;
+    color: var(--text) !important;
+    border: 1px solid rgba(255,255,255,0.10);
+    backdrop-filter: blur(6px) saturate(110%);
+    -webkit-backdrop-filter: blur(6px) saturate(110%);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+}
+
+/* Make statistic cards darker pink as requested */
+.stat-card {
+    /* Light pink statistic card */
+    background: linear-gradient(135deg, rgba(247,192,220,0.98), rgba(255,241,245,0.96)) !important;
+    color: var(--bg-dark) !important;
+    border: 1px solid rgba(255,255,255,0.06);
+    box-shadow: 0 10px 28px rgba(171,20,80,0.10);
+}
+
+.card .card-body, .form-card .card-body, .stat-card .card-body {
+    background: transparent;
+}
+
+/* dark-mode backdrop override */
+.dark-mode .page-overlay {
+    background: radial-gradient(800px 400px at 50% 40%, rgba(255, 255, 255, 0.03), transparent 30%);
+}
+
+/* ensure main containers appear above the overlay */
+.container,
+.navbar,
+.card,
+.hero,
+footer {
+    position: relative;
+    z-index: 2
+}
+
+.brand-logo {
+    font-size: 1.6rem
+}
+
+.brand-title {
+    font-weight: 700;
+    color: var(--text)
+}
+
+.brand-sub {
+    font-size: 0.85rem;
+    color: var(--muted)
+}
+
+.card {
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--card-border, rgba(6, 30, 84, 0.04));
+    box-shadow: 0 10px 30px rgba(9, 30, 66, 0.06)
+}
+
+.card .card-body {
+    padding: 1.25rem
+}
+
+.slot-card {
+    transition: transform .12s ease, box-shadow .12s ease;
+    border-radius: 12px;
+    padding: 0;
+    border: 1px solid var(--card-border, rgba(6, 30, 84, 0.04));
+}
+
+.slot-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 18px 36px rgba(9, 30, 66, 0.08)
+}
+
+.slot-status {
+    font-weight: 700
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, var(--accent), #3b82f6);
+    border: none;
+    color: #fff
+}
+
+/* Strong, high-contrast dark-pink buttons used across navbar and search */
+.bg-gradient {
+    background: linear-gradient(180deg, #f8fbff, #eef4ff)
+}
+
+.hero {
+    background: linear-gradient(135deg, rgba(46, 16, 79, 0.25), rgba(92, 33, 126, 0.22));
+    padding: 2.4rem;
+    border-radius: 18px;
+    margin-bottom: 1.4rem;
+    border: 1px solid rgba(90, 23, 135, 0.34);
+    box-shadow: 0 20px 60px rgba(75, 18, 109, 0.32);
+}
+
+.hero-title {
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: #1f052f;
+    text-transform: uppercase;
+}
+
+/* Homepage quote block (pink stylish) */
+.site-quote {
+    width: 100%;
+    display: block;
+    padding: 0.6rem 0;
+}
+.site-quote .quote-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    background: linear-gradient(90deg, rgba(255,241,245,0.95), rgba(247,192,220,0.96));
+    border: 1px solid rgba(216,27,96,0.14);
+    box-shadow: 0 8px 30px rgba(216,27,96,0.06);
+}
+.site-quote .quote-text{
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--bg-dark);
+}
+.site-quote .quote-author{
+    display:block;
+    color: rgba(107,15,156,0.86);
+    margin-top:0.25rem;
+}
+.site-quote .quote-emoji{ font-size:1.1rem; margin-left:0.4rem }
+
+.hero .display-6 {
+    color: var(--text)
+}
+
+.stats-card {
+    border-radius: 10px;
+    padding: 1rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 252, 255, 0.98));
+    box-shadow: 0 8px 20px rgba(9, 30, 66, 0.04);
+}
+
+.form-card {
+    max-width: 700px;
+    margin: auto;
+    padding: 1.2rem
+}
+
+/* Park/Remove page: pink/purple accented form and buttons */
+.form-card.card {
+    background-image: linear-gradient(180deg, rgba(107,15,156,0.06), rgba(216,27,96,0.04));
+    border: 1px solid rgba(168,45,104,0.08);
+}
+.form-card .btn-primary { background-image: linear-gradient(90deg,var(--bg-purple),var(--bg-pink)); border:0; color:#fff }
+.form-card .btn-danger { background-image: linear-gradient(90deg,#a31578,#d81b60); border:0; color:#fff }
+.alert.alert-info{ background: linear-gradient(90deg,#a31578,#d81b60); color:#fff; border:0 }
+.alert.alert-warning{ background: linear-gradient(90deg,#a31578,#d81b60); color:#fff; border:0 }
+
+.table th,
+.table td {
+    vertical-align: middle
+}
+
+/* Charts and dashboard layout tweaks */
+.card-small {
+    display: block
+}
+
+.card-small .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px
+}
+
+.chart-container {
+    width: 100%;
+    min-height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+.chart-container canvas {
+    width: 100% !important;
+    height: 160px !important;
+    max-height: 240px
+}
+
+@media (max-width:768px) {
+    .chart-container canvas {
+        height: 140px !important
+    }
+}
+
+.stat-box {
+    padding: 18px;
+    border-radius: 12px
+}
+
+.stat-grid {
+    display: flex;
+    gap: 1rem
+}
+
+.stat-grid .stat-box {
+    flex: 1
+}
+
+/* Badges */
+.badge {
+    background-image: linear-gradient(90deg, var(--bg-purple), var(--bg-pink));
+    color: #fff;
+    border: 0
+}
+
+.badge.bg-success {
+    background-image: linear-gradient(90deg, var(--bg-purple), var(--bg-pink));
+    color: #fff
+}
+
+.badge.bg-danger {
+    background-image: linear-gradient(90deg, var(--bg-purple), var(--bg-pink));
+    color: #fff
+}
+
+.badge.bg-warning {
+    background-image: linear-gradient(90deg, var(--bg-purple), var(--bg-pink));
+    color: #fff
+}
+
+/* slot visual styles for light theme */
+.slot-free {
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0.06), rgba(16, 185, 129, 0.02));
+    border: 1px solid rgba(16, 185, 129, 0.06)
+}
+
+.slot-occupied {
+    background: linear-gradient(180deg, rgba(244, 63, 94, 0.06), rgba(244, 63, 94, 0.02));
+    border: 1px solid rgba(244, 63, 94, 0.06)
+}
+
+.slot-reserved {
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.06), rgba(245, 158, 11, 0.02));
+    border: 1px solid rgba(245, 158, 11, 0.06)
+}
+
+/* Navbar and footer tweaks */
+.navbar {
+    background: transparent
+}
+
+.navbar-pink {
+    background: rgba(255, 182, 193, 0.24);
+    border-radius: 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(14px);
+}
+
+.navbar-pink .navbar-brand,
+.navbar-pink .nav-link,
+.navbar-pink .navbar-toggler-icon {
+    color: #1f1b2e !important;
+}
+
+.navbar-pink .navbar-toggler-icon {
+    filter: invert(0) brightness(1);
+}
+
+.navbar-pink .nav-link {
+    color: rgba(31, 27, 46, 0.95) !important;
+}
+
+.navbar-pink .nav-link:hover,
+.navbar-pink .nav-link:focus {
+    color: #591057 !important;
+}
+
+.navbar-pink .form-control {
+    background: rgba(255, 255, 255, 0.38);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    color: #1f1b2e;
+}
+
+.navbar-pink .form-control::placeholder {
+    color: rgba(31, 27, 46, 0.6);
+}
+
+.btn-pink {
+    background: #ffffff;
+    color: #a21caf;
+    border: 0;
+}
+
+.dark-mode .light-ui {
+    background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.18), transparent 20%),
+                linear-gradient(180deg, #070916 0%, #0f0f26 50%, #13162e 100%) !important;
+}
+
+.dark-mode .light-ui::after {
+    background:
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.04) 0 1px, transparent 1px 26px),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 26px),
+        repeating-linear-gradient(135deg, rgba(79, 70, 229, 0.16) 0 12px, rgba(79, 70, 229, 0.00) 12px 36px);
+    opacity: 0.42;
+}
+
+.btn-pink:hover,
+.btn-pink:focus {
+    background: rgba(255, 255, 255, 0.96);
+    color: #5b21b6;
+}
+
+
+.parking-banner.banner-right {
+    width: 280px;
+    height: 180px;
+    min-width: 220px;
+}
+
+.dark-footer {
+    background: transparent;
+    color: var(--muted)
+}
+
+/* Soft network backdrop */
+.bg-network {
+    position: relative;
+    padding: 40px 0;
+    background: transparent;
+    overflow: visible
+}
+
+.bg-network::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(90deg, rgba(59, 130, 246, 0.01), rgba(99, 102, 241, 0.005));
+    mix-blend-mode: screen;
+    pointer-events: none
+}
+
+.bg-network .network-lines {
+    position: absolute;
+    inset: 0;
+    opacity: 0.02;
+    background-image: linear-gradient(90deg, rgba(59, 130, 246, 0.01) 1px, transparent 1px);
+    background-size: 80px 80px
+}
+
+/* small utility */
+.text-muted {
+    color: var(--muted)
+}
+
+
+
+
+/* Force base page text to black (but allow exceptions) */
+:root {
+    --text: #000000;
+    --muted: #000000;
+    --chart-text: #000000
+}
+
+body {
+    color: #000000
+}
+
+a,
+.nav-link {
+    color: #000000
+}
+
+.badge {
+    color: #000000
+}
+
+/* Stat card color variants (colorful premium look) */
+.stat-card {
+    color: #fff !important;
+    z-index: 2
+}
+
+.stat-card .stat-label {
+    color: transparent !important;
+    background-image: linear-gradient(90deg, #7b1fa2, #d81b60);
+    -webkit-background-clip: text;
+    background-clip: text
+}
+
+.stat-card .stat-value {
+    color: transparent !important;
+    background-image: linear-gradient(90deg, #7b1fa2, #d81b60);
+    -webkit-background-clip: text;
+    background-clip: text
+}
+
+.stat-total,
+.stat-available,
+.stat-occupied,
+.stat-bookings {
+    /* Unified dark pink ↔ purple double-gradient look */
+    background-image:
+        linear-gradient(135deg, #6b0f9c 0%, #a31578 40%, #d81b60 100%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+    background-blend-mode: overlay, normal;
+    border: 0 !important;
+    box-shadow: 0 20px 44px rgba(168, 45, 104, 0.16) !important;
+    z-index: 3;
+}
+
+/* Make inner dashboard cards and headings use dark pink ↔ purple gradients */
+.bg-network .card-small {
+    background-image: linear-gradient(135deg, rgba(107, 15, 156, 0.12), rgba(168, 24, 104, 0.10));
+    border: 1px solid rgba(168, 45, 104, 0.08);
+    color: #fff;
+    box-shadow: 0 12px 30px rgba(168, 45, 104, 0.08);
+}
+
+.bg-network .card-small .card-title,
+.bg-network .card-small h6,
+.bg-network .card-small .stat-label {
+    background-image: linear-gradient(90deg, #7b1fa2, #d81b60);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+/* Keep table text readable (dark) inside card-small */
+.bg-network .card-small table,
+.bg-network .card-small th,
+.bg-network .card-small td {
+    color: var(--text, #000) !important;
+}
+
+/* Slightly intensify stat values for contrast */
+.stat-card .stat-value {
+    font-weight: 800;
+    text-shadow: 0 2px 6px rgba(215, 27, 96, 0.12)
+}
+
+/* Today's bookings table: gradient headers, subtle row tints, and gradient badges */
+.bg-network .card-small .table thead th {
+    background-image: linear-gradient(90deg, #7b1fa2, #d81b60);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700
+}
+
+.bg-network .card-small .table tbody tr:nth-child(odd) {
+    background: linear-gradient(90deg, rgba(216, 27, 96, 0.03), rgba(107, 15, 156, 0.02));
+}
+
+.bg-network .card-small .table tbody tr:hover {
+    background: linear-gradient(90deg, rgba(216, 27, 96, 0.06), rgba(107, 15, 156, 0.04));
+}
+
+.bg-network .card-small .badge {
+    background-image: linear-gradient(90deg, #7b1fa2, #d81b60);
+    color: #fff;
+    border: 0
+}
+
+/* Make booking ID and small meta text slightly tinted for consistency */
+.bg-network .card-small td {
+    color: var(--text, #000)
+}
+
+.bg-network .card-small td.small {
+    color: rgba(0, 0, 0, 0.6)
+}
+
+/* Landing page styling */
+.landing-container {
+    background: linear-gradient(180deg, var(--page-bg-light), var(--page-bg-light-2));
+}
+.landing-card {
+    max-width: 600px;
+    padding: 2.5rem;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255,241,245,0.98), rgba(247,192,220,0.96));
+    border: 1.5px solid rgba(216,27,96,0.18);
+    box-shadow: 0 20px 60px rgba(216,27,96,0.12);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+.landing-quote .quote-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--bg-dark);
+    margin-bottom: 0;
+}
+.landing-quote .quote-main {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--bg-dark);
+    line-height: 1.6;
+    margin: 0.8rem 0;
+    font-style: italic;
+}
+.landing-quote .quote-emoji {
+    font-size: 2rem;
+    display: inline-block;
+}
+.landing-cta .btn-primary {
+    background: linear-gradient(90deg, #d81b60, #a31578);
+    border: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.landing-cta .btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(216,27,96,0.3);
+}
+.landing-footer {
+    font-size: 0.95rem;
+    color: rgba(107,15,156,0.72);
+}

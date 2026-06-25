@@ -1,0 +1,3 @@
+# Requirements for console project and optional Django web UI
+django>=4.2
+

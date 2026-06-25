@@ -1,0 +1,22 @@
+{% extends 'parking_app/base.html' %}
+{% block content %}
+  <div class="card p-3">
+    <h4>Search Results for "{{ query }}"</h4>
+    {% if results %}
+      <ul class="list-group mt-2">
+        {% for v in results %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <div>
+              <strong>{{ v.vehicle_no }}</strong> — {{ v.owner_name }} ({{ v.vehicle_type }})
+            </div>
+            <div>
+              {% if v.exit_time %}<span class="text-muted">Exited</span>{% else %}<span class="badge bg-success">Parked</span>{% endif %}
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">No vehicles found.</p>
+    {% endif %}
+  </div>
+{% endblock %}

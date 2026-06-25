@@ -1,0 +1,26 @@
+{% extends 'parking_app/base.html' %}
+{% block content %}
+  <h2>Remove Vehicle</h2>
+  {% if msg %}
+    <div class="alert alert-warning">{{ msg }}</div>
+  {% endif %}
+  {% if receipt %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Parking Receipt</h5>
+        <p>Vehicle No: {{ receipt.vehicle_no }}</p>
+        <p>Owner: {{ receipt.owner }}</p>
+        <p>Type: {{ receipt.vehicle_type }}</p>
+        <p>Slot: {{ receipt.slot }}</p>
+        <p>Entry: {{ receipt.entry }}</p>
+        <p>Exit: {{ receipt.exit }}</p>
+        <p>Amount Due: ${{ receipt.fee }}</p>
+      </div>
+    </div>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-danger">Remove</button>
+  </form>
+{% endblock %}

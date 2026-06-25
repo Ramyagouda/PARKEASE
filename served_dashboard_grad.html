@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Smart Parking</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+  </head>
+  <body class="light-ui">
+    <div class="page-overlay" aria-hidden="true"></div>
+    <nav class="navbar navbar-expand-lg navbar-light shadow-sm py-3">
+      <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <div class="brand-logo me-2">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <defs>
+                <linearGradient id="g1" x1="0" x2="1">
+                  <stop offset="0%" stop-color="#8B5CF6"/>
+                  <stop offset="100%" stop-color="#60A5FA"/>
+                </linearGradient>
+              </defs>
+              <rect width="36" height="36" rx="8" fill="url(#g1)" />
+              <path d="M10 22c2-6 9-6 12-2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95"/>
+              <text x="18" y="23" fill="#fff" font-size="10" font-weight="700" text-anchor="middle" font-family="Inter, Arial">SP</text>
+            </svg>
+          </div>
+          <div>
+            <div class="brand-title">Smart Parking</div>
+            <div class="brand-sub">Digital network • Vehicle ecosystems</div>
+          </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navmenu">
+          <form class="d-flex me-3" action="/search/" method="get">
+            <input class="form-control me-2" name="q" placeholder="Search vehicle no" aria-label="Search">
+            <button class="btn btn-outline-secondary" type="submit">Search</button>
+          </form>
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/park/">Park Vehicle</a></li>
+            <li class="nav-item"><a class="nav-link" href="/remove/">Remove Vehicle</a></li>
+            <li class="nav-item"><a class="nav-link" href="/dashboard/">Dashboard</a></li>
+            <li class="nav-item ms-2"><button id="dark-toggle" class="btn btn-sm btn-outline-secondary">Theme</button></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="bg-network">
+      <div class="container my-4">
+        
+
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="m-0">Dashboard</h2>
+  </div>
+
+  <style>
+    /* Stat card structural styling only — color/backgrounds handled by classes */
+    .stat-card{ border-radius:14px; padding:0; box-shadow:0 10px 30px rgba(9,30,66,0.06); border:1px solid rgba(6,14,44,0.04); background:transparent }
+    .stat-card .card-body{padding:18px}
+    .stat-label{ font-size:0.9rem; margin-bottom:6px }
+    .stat-value{ font-size:1.6rem; font-weight:700 }
+    .slot-card{ border-radius:12px; padding:12px; min-height:120px; }
+    .slot-available{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); }
+    .slot-occupied{ background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.03)); border:1px solid rgba(255,255,255,0.04); }
+    .card-small{ border-radius:12px; padding:12px; }
+    .table-fixed { font-size:0.9rem }
+  </style>
+
+  <!-- Statistics Cards + Charts -->
+  <div class="row g-3 mb-4">
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card text-center stat-total">
+        <div class="card-body">
+          <div class="stat-label">Total Slots</div>
+          <div class="stat-value" data-target="12">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card text-center stat-available">
+        <div class="card-body">
+          <div class="stat-label">Available Slots</div>
+          <div class="stat-value" data-target="0">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card text-center stat-occupied">
+        <div class="card-body">
+          <div class="stat-label">Occupied Slots</div>
+          <div class="stat-value" data-target="12">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card text-center stat-bookings">
+        <div class="card-body">
+          <div class="stat-label">Today's Bookings</div>
+          <div class="stat-value" data-target="5">0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-lg-8 mb-3">
+      <div class="card card-small">
+        <div class="card-body">
+          <h5 class="card-title">Today's Bookings</h5>
+          <div class="table-responsive">
+            <table class="table table-fixed table-hover">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Vehicle Number</th>
+                  <th>Vehicle Type</th>
+                  <th>Slot Number</th>
+                  <th>Entry Time</th>
+                  <th>Exit Time</th>
+                  <th>Booking Status</th>
+                  <th>Payment Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <td>BK016</td>
+                    <td>NJ</td>
+                    <td>LKJ</td>
+                    <td>Slot 12</td>
+                    <td>Jun 24, 13:16</td>
+                    <td>-</td>
+                    <td>Active</td>
+                    <td>Pending</td>
+                  </tr>
+                
+                  <tr>
+                    <td>BK015</td>
+                    <td>KA34</td>
+                    <td>car</td>
+                    <td>-</td>
+                    <td>Jun 24, 13:09</td>
+                    <td>Jun 24, 13:16</td>
+                    <td>Completed</td>
+                    <td>Paid</td>
+                  </tr>
+                
+                  <tr>
+                    <td>BK014</td>
+                    <td>KA31 J2367</td>
+                    <td>byke</td>
+                    <td>Slot 3</td>
+                    <td>Jun 24, 13:08</td>
+                    <td>-</td>
+                    <td>Active</td>
+                    <td>Pending</td>
+                  </tr>
+                
+                  <tr>
+                    <td>BK013</td>
+                    <td>KA31 J2349</td>
+                    <td>byke</td>
+                    <td>Slot 11</td>
+                    <td>Jun 24, 11:20</td>
+                    <td>-</td>
+                    <td>Active</td>
+                    <td>Pending</td>
+                  </tr>
+                
+                  <tr>
+                    <td>BK012</td>
+                    <td>KA31 J2345</td>
+                    <td>car</td>
+                    <td>-</td>
+                    <td>Jun 24, 10:45</td>
+                    <td>Jun 24, 13:02</td>
+                    <td>Completed</td>
+                    <td>Paid</td>
+                  </tr>
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-3">
+      <div class="card card-small p-3 mb-3">
+        <h6 class="mb-2">Slot Occupancy</h6>
+        <div class="chart-container">
+          <canvas id="occupancyPie" aria-label="Slot occupancy chart"></canvas>
+        </div>
+      </div>
+      <div class="card card-small p-3">
+        <h6 class="mb-2">Bookings (Last 7 days)</h6>
+        <div class="chart-container">
+          <canvas id="bookingsLine" aria-label="Bookings over last 7 days"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slot overview moved to front page -->
+
+  <!-- Charts JS (Chart.js via CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    (function(){
+      var occupied = 12;
+      var available = 0;
+      var css = getComputedStyle(document.documentElement);
+      var chartTextColor = css.getPropertyValue('--chart-text').trim() || '#e6eefc';
+      var chartGrid = css.getPropertyValue('--chart-grid').trim() || 'rgba(255,255,255,0.03)';
+      var ctxPie = document.getElementById('occupancyPie').getContext('2d');
+      new Chart(ctxPie, {
+        type: 'doughnut',
+        data: {
+          labels: ['Occupied','Available'],
+          datasets: [{ data: [occupied, available], backgroundColor: ['#EC4899','#60A5FA'], hoverOffset:12, borderWidth:0 }]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false, cutout: '60%',
+          plugins:{
+            legend:{position:'bottom', labels:{boxWidth:12, padding:12, color:chartTextColor}},
+            tooltip:{callbacks:{label:function(ctx){return ctx.label+': '+ctx.parsed;}}}
+          }
+        }
+      });
+
+      var labels = ['Jun 18', 'Jun 19', 'Jun 20', 'Jun 21', 'Jun 22', 'Jun 23', 'Jun 24'];
+      var series = [0, 0, 0, 0, 0, 11, 5];
+      var ctxLine = document.getElementById('bookingsLine').getContext('2d');
+      var grad = ctxLine.createLinearGradient(0,0,0,200);
+      grad.addColorStop(0,'rgba(139,92,246,0.22)');
+      grad.addColorStop(1,'rgba(139,92,246,0.02)');
+      new Chart(ctxLine, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets:[{
+            label:'Bookings', data: series, borderColor:'#8B5CF6', backgroundColor:grad, tension:0.35, fill:true, pointRadius:4, pointHoverRadius:6
+          }]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false,
+          plugins:{legend:{display:false}, tooltip:{mode:'index', intersect:false}},
+          scales:{
+            x:{grid:{color:chartGrid}, ticks:{color:chartTextColor}},
+            y:{beginAtZero:true, grid:{color:chartGrid}, ticks:{color:chartTextColor, precision:0}}
+          }
+        }
+      });
+
+      // animate stat numbers
+      function animateCounts(duration){
+        var els = document.querySelectorAll('.stat-value');
+        els.forEach(function(el){
+          var target = parseInt(el.getAttribute('data-target')||el.textContent)||0;
+          var start = 0; var startTime = null;
+          function step(ts){
+            if(!startTime) startTime = ts;
+            var progress = Math.min((ts-startTime)/duration,1);
+            el.textContent = Math.floor(progress* (target-start) + start);
+            if(progress < 1) requestAnimationFrame(step);
+            else el.textContent = target;
+          }
+          requestAnimationFrame(step);
+        });
+      }
+      // run when DOM ready
+      document.addEventListener('DOMContentLoaded', function(){ animateCounts(900); });
+    })();
+  </script>
+
+
+      </div>
+    </div>
+
+    <footer class="dark-footer mt-5 py-3">
+      <div class="container text-center small text-muted">© Smart Parking • Digital Network</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/main.js"></script>
+  </body>
+</html>

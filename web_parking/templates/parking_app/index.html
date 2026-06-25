@@ -1,0 +1,78 @@
+{% extends 'parking_app/base.html' %}
+{% block content %}
+  <section class="hero py-5">
+    <div class="row gx-4 gy-4 align-items-center">
+      <div class="col-lg-12">
+        <div class="card p-4 p-md-5">
+          <div class="d-flex flex-column flex-md-row align-items-start justify-content-between gap-4">
+            <div class="hero-copy flex-fill">
+              <h1 class="hero-title mb-3">Smart Parking</h1>
+              <p class="mb-4">Efficient slot allocation, waiting queue management, and real-time parking status for your network.</p>
+              <div class="d-flex flex-wrap gap-3">
+                <a href="/dashboard/" class="btn btn-primary btn-lg">Dashboard</a>
+                <a href="/park/" class="btn btn-outline-primary btn-lg">Park Vehicle</a>
+              </div>
+            </div>
+            <div class="parking-banner banner-right"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <h4 class="mb-3">Parking Slots</h4>
+  <div class="row">
+    {% for info in slots_info %}
+      <div class="col-6 col-sm-4 col-md-3 mb-4">
+          <div class="card slot-card {% if info.vehicle %}slot-occupied{% else %}slot-available{% endif %}">
+            <div class="card-body">
+              <h6 class="mb-1">Slot {{ info.slot.slot_number }}</h6>
+              {% if info.vehicle %}
+                <div class="d-flex align-items-center justify-content-between">
+                  <div>
+                    <div style="font-size:1.05rem;font-weight:600">🚗 {{ info.vehicle.vehicle_no }}</div>
+                    <div class="small text-muted">{{ info.vehicle.owner_name }}</div>
+                    <div class="small text-muted">Type: {{ info.vehicle.vehicle_type }}</div>
+                    <div class="small text-muted">Entry: {{ info.vehicle.entry_time|date:"h:i A" }}</div>
+                  </div>
+                  <div>
+                    <div class="badge bg-danger">Occupied</div>
+                  </div>
+                </div>
+              {% else %}
+                <div class="text-center">
+                  <div class="h6 text-success">Available</div>
+                  <div class="small text-muted">Ready for Booking</div>
+                  <div class="mt-2"><span class="badge bg-success">Free</span></div>
+                </div>
+              {% endif %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+      <!-- Waiting Queue (moved below slots) -->
+      <h4 class="mb-3 mt-4">Waiting Queue</h4>
+      <div class="row">
+        {% if waiting_list and waiting_list.count %}
+          {% for w in waiting_list %}
+            <div class="col-6 col-sm-4 col-md-3 mb-4">
+              <div class="card slot-card slot-reserved">
+                <div class="card-body">
+                  <h6 class="mb-1">#{{ forloop.counter }} Waiting</h6>
+                  <div class="small" style="font-weight:600">{{ w.vehicle_no }} — {{ w.owner_name }}</div>
+                  <div class="small text-muted">Type: {{ w.vehicle_type }}</div>
+                  <div class="small text-muted">Queued: {{ w.queued_at|date:"M d, h:i A" }}</div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <div class="col-12">
+            <div class="card slot-card slot-free">
+              <div class="card-body text-center small">No waiting vehicles</div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+{% endblock %}

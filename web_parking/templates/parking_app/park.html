@@ -1,0 +1,22 @@
+{% extends 'parking_app/base.html' %}
+{% block content %}
+  <div class="form-card card mx-auto">
+    <div class="card-body">
+      <h3 class="mb-3">Park Vehicle</h3>
+      {% if msg %}
+        <div class="alert alert-info">{{ msg }}</div>
+      {% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-md-6">{{ form.vehicle_no.label_tag }} {{ form.vehicle_no }}</div>
+          <div class="col-md-6">{{ form.owner_name.label_tag }} {{ form.owner_name }}</div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-md-6">{{ form.vehicle_type.label_tag }} {{ form.vehicle_type }}</div>
+          <div class="col-md-6 text-end"><button class="btn btn-primary mt-2">Park</button></div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

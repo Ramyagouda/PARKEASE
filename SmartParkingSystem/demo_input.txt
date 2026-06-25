@@ -1,0 +1,13 @@
+run admin and project1
+MH12-AB1234
+Alice
+Car
+1
+KA01-XY9999
+Bob
+Bike
+5
+2
+MH12-AB1234
+8
+9

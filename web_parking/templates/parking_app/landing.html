@@ -1,0 +1,25 @@
+{% extends 'parking_app/base.html' %}
+{% block content %}
+  <div class="landing-container d-flex align-items-center justify-content-center" style="min-height: 85vh;">
+    <div class="landing-card text-center">
+      <!-- Main Quote -->
+      <div class="landing-quote mb-4">
+        <h2 class="quote-title mb-3">🚗 Smart Parking System 🚗</h2>
+        <p class="quote-main">"I help you find the right spot and save your time — park smarter, live easier."</p>
+        <p class="quote-emoji mt-2">✨💖🎯</p>
+      </div>
+
+      <!-- CTA Button -->
+      <div class="landing-cta mt-5">
+        <a href="{% url 'parking_app:home' %}" class="btn btn-lg btn-primary px-5 py-3">
+          Start Parking Journey →
+        </a>
+      </div>
+
+      <!-- Subtle footer text -->
+      <div class="landing-footer mt-5 text-muted small">
+        <p>Experience seamless parking management</p>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'parking_app/base.html' %}
+{% block content %}
+
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="m-0">Dashboard</h2>
+  </div>
+
+  <style>
+    /* Stat card structural styling only — color/backgrounds handled by classes */
+    .stat-card{ border-radius:14px; padding:0; box-shadow:0 10px 30px rgba(9,30,66,0.06); border:1px solid rgba(6,14,44,0.04); background:transparent }
+    .stat-card .card-body{padding:18px}
+    .stat-label{ font-size:0.9rem; margin-bottom:6px }
+    .stat-value{ font-size:1.6rem; font-weight:700 }
+    .slot-card{ border-radius:12px; padding:12px; min-height:120px; }
+    .slot-available{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.04); }
+    .slot-occupied{ background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.03)); border:1px solid rgba(255,255,255,0.04); }
+    .card-small{ border-radius:12px; padding:12px; }
+    .table-fixed { font-size:0.9rem }
+  </style>
+
+  <!-- Statistics Cards + Charts -->
+  <div class="row g-3 mb-4">
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card text-center stat-total">
+        <div class="card-body">
+          <div class="stat-label">Total Slots</div>
+          <div class="stat-value" data-target="{{ total }}">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card text-center stat-available">
+        <div class="card-body">
+          <div class="stat-label">Available Slots</div>
+          <div class="stat-value" data-target="{{ available }}">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card text-center stat-occupied">
+        <div class="card-body">
+          <div class="stat-label">Occupied Slots</div>
+          <div class="stat-value" data-target="{{ occupied }}">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+      <div class="card stat-card text-center stat-bookings">
+        <div class="card-body">
+          <div class="stat-label">Today's Bookings</div>
+          <div class="stat-value" data-target="{{ todays_bookings|length }}">0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-lg-8 mb-3">
+      <div class="card card-small">
+        <div class="card-body">
+          <h5 class="card-title">Today's Bookings</h5>
+          <div class="table-responsive">
+            <table class="table table-fixed table-hover">
+              <thead>
+                <tr>
+                  <th>Booking ID</th>
+                  <th>Vehicle Number</th>
+                  <th>Vehicle Type</th>
+                  <th>Slot Number</th>
+                  <th>Entry Time</th>
+                  <th>Exit Time</th>
+                  <th>Booking Status</th>
+                  <th>Payment Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for b in todays_bookings %}
+                  <tr>
+                    <td>BK{{ b.id|stringformat:"03d" }}</td>
+                    <td>{{ b.vehicle_no }}</td>
+                    <td>{{ b.vehicle_type }}</td>
+                    <td>{% if b.slot %}Slot {{ b.slot.slot_number }}{% else %}-{% endif %}</td>
+                    <td>{{ b.entry_time|date:"M d, H:i" }}</td>
+                    <td>{% if b.exit_time %}{{ b.exit_time|date:"M d, H:i" }}{% else %}-{% endif %}</td>
+                    <td>{% if b.exit_time %}Completed{% else %}Active{% endif %}</td>
+                    <td>{% if b.exit_time %}Paid{% else %}Pending{% endif %}</td>
+                  </tr>
+                {% empty %}
+                  <tr><td colspan="8">No bookings today</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 mb-3">
+      <div class="card card-small p-3 mb-3">
+        <h6 class="mb-2">Slot Occupancy</h6>
+        <div class="chart-container">
+          <canvas id="occupancyPie" aria-label="Slot occupancy chart"></canvas>
+        </div>
+      </div>
+      <div class="card card-small p-3">
+        <h6 class="mb-2">Bookings (Last 7 days)</h6>
+        <div class="chart-container">
+          <canvas id="bookingsLine" aria-label="Bookings over last 7 days"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slot overview moved to front page -->
+
+  <!-- Charts JS (Chart.js via CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    (function(){
+      var occupied = {{ occupied|default:0 }};
+      var available = {{ available|default:0 }};
+      var css = getComputedStyle(document.documentElement);
+      var chartTextColor = css.getPropertyValue('--chart-text').trim() || '#e6eefc';
+      var chartGrid = css.getPropertyValue('--chart-grid').trim() || 'rgba(255,255,255,0.03)';
+      var ctxPie = document.getElementById('occupancyPie').getContext('2d');
+      new Chart(ctxPie, {
+        type: 'doughnut',
+        data: {
+          labels: ['Occupied','Available'],
+          datasets: [{ data: [occupied, available], backgroundColor: ['#EC4899','#60A5FA'], hoverOffset:12, borderWidth:0 }]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false, cutout: '60%',
+          plugins:{
+            legend:{position:'bottom', labels:{boxWidth:12, padding:12, color:chartTextColor}},
+            tooltip:{callbacks:{label:function(ctx){return ctx.label+': '+ctx.parsed;}}}
+          }
+        }
+      });
+
+      var labels = {{ days_labels|safe }};
+      var series = {{ bookings_series|safe }};
+      var ctxLine = document.getElementById('bookingsLine').getContext('2d');
+      var grad = ctxLine.createLinearGradient(0,0,0,200);
+      grad.addColorStop(0,'rgba(139,92,246,0.22)');
+      grad.addColorStop(1,'rgba(139,92,246,0.02)');
+      new Chart(ctxLine, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets:[{
+            label:'Bookings', data: series, borderColor:'#8B5CF6', backgroundColor:grad, tension:0.35, fill:true, pointRadius:4, pointHoverRadius:6
+          }]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false,
+          plugins:{legend:{display:false}, tooltip:{mode:'index', intersect:false}},
+          scales:{
+            x:{grid:{color:chartGrid}, ticks:{color:chartTextColor}},
+            y:{beginAtZero:true, grid:{color:chartGrid}, ticks:{color:chartTextColor, precision:0}}
+          }
+        }
+      });
+
+      // animate stat numbers
+      function animateCounts(duration){
+        var els = document.querySelectorAll('.stat-value');
+        els.forEach(function(el){
+          var target = parseInt(el.getAttribute('data-target')||el.textContent)||0;
+          var start = 0; var startTime = null;
+          function step(ts){
+            if(!startTime) startTime = ts;
+            var progress = Math.min((ts-startTime)/duration,1);
+            el.textContent = Math.floor(progress* (target-start) + start);
+            if(progress < 1) requestAnimationFrame(step);
+            else el.textContent = target;
+          }
+          requestAnimationFrame(step);
+        });
+      }
+      // run when DOM ready
+      document.addEventListener('DOMContentLoaded', function(){ animateCounts(900); });
+    })();
+  </script>
+
+{% endblock %}
