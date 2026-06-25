@@ -95,16 +95,18 @@ The system automatically assigns the nearest available parking slot to incoming 
 
 ## 🔄 Project Workflow
 
-1️⃣ Vehicle enters parking area.
-2️⃣ System checks slot availability.
-3️⃣ Nearest available slot is assigned.
-4️⃣ Vehicle details are stored.
-5️⃣ If no slot is available, the vehicle joins the waiting queue.
-6️⃣ Upon vehicle exit:
-* Parking fee is calculated.
-* Receipt is generated.
-* Slot becomes available.
-7️⃣ First vehicle from the waiting queue gets the free slot automatically.
+* 1️⃣ Vehicle enters parking area.
+* 2️⃣ System checks slot availability.
+* 3️⃣ Nearest available slot is assigned.
+* 4️⃣ Vehicle details are stored.
+* 5️⃣ If no slot is available, the vehicle joins the waiting queue.
+* 6️⃣ Upon vehicle exit:
+
+  * Parking fee is calculated.
+  * Receipt is generated.
+  * Slot becomes available.
+
+* 7️⃣ First vehicle from the waiting queue gets the free slot automatically.
 
 ---
 
