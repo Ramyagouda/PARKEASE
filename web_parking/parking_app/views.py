@@ -126,8 +126,8 @@ def remove_vehicle(request):
                 if next_wait and slot:
                     slot.occupied = True
                     slot.save()
-                    # reuse a previous exited Vehicle record if it exists to honor the unique constraint
-                    prev = Vehicle.objects.filter(vehicle_no=next_wait.vehicle_no, exit_time__isnull=False).order_by('-exit_time').first()
+                    # reuse any existing Vehicle record with this vehicle_no to avoid UNIQUE constraint failures
+                    prev = Vehicle.objects.filter(vehicle_no=next_wait.vehicle_no).order_by('-entry_time').first()
                     if prev:
                         prev.owner_name = next_wait.owner_name
                         prev.vehicle_type = next_wait.vehicle_type
